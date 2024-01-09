@@ -21,7 +21,7 @@ class TLDetector(object):
         rospy.init_node('tl_detector')
         self.bridge = CvBridge()
 
-        self.use_ground_truth = True # TODO Set to False when you don't want to use ground truth traffic light information any longer
+        self.use_ground_truth = False # TODO Set to False when you don't want to use ground truth traffic light information any longer
         self.detector = TrafficLightDetector()
         self.state = TrafficLight.UNKNOWN
         self.state_count = 0
@@ -71,10 +71,12 @@ class TLDetector(object):
         # Find the next closest traffic light along the track
         #     - First find the closest waypoint to the car
         #     - Next find the traffic light closest to this waypoint, but coming after it
-        _, car_wp_idx = self.waypoints_db.get_next_closest_idx(self.current_pose)
+        car_wp_idx = self.waypoints_db.get_next_closest_idx(self.current_pose)
         smallest_dist = len(self.waypoints_db.waypoints)
+        closest_light_wp_idx=0
+        closest_light_index = 0
         for i, line in enumerate(self.stopline_positions): # Traffic light stop lines
-            _, line_wp_idx = self.waypoints_db.get_next_closest_idx((line[0], line[1]))
+            line_wp_idx = self.waypoints_db.get_next_closest_idx((line[0], line[1]))
             dist = line_wp_idx - car_wp_idx
             if dist >= 0 and dist < smallest_dist:
                 smallest_dist = dist

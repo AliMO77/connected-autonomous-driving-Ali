@@ -9,6 +9,8 @@
   "runArgs": [
     "--rm",
     "--name",
-    "cad-final-project"
+    "cad-final-project",
+    "-e", "DISPLAY",
+    "-v", "/tmp/.X11-unix:/tmp/.X11-unix"
   ]
 }

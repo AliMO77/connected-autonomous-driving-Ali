@@ -23,27 +23,41 @@ class DBWNode(object):
         self.steer_pub = rospy.Publisher('/vehicle/steering_cmd', SteeringCmd, queue_size=1)
         self.throttle_pub = rospy.Publisher('/vehicle/throttle_cmd', ThrottleCmd, queue_size=1)
         self.brake_pub = rospy.Publisher('/vehicle/brake_cmd', BrakeCmd, queue_size=1)
-
+    
+    ######################################Subscribing##########################################################
         # TODO: Subscribe to /twist_cmd to get target linear and angular velocities, and /current_velocity to get the current velocity
         # Keep in mind the following:
         #   - We are assuming that the road is flat, so only angular.z velocity matters
         #   - The coordinate systems is centered on the car, so the linear velocity of the car is linear.x
         # You will need to setup callbacks to refresh the values of the following properties (see waypoint updater for an example)
+
+        rospy.Subscriber('/current_velocity', TwistStamped, self.velocity_cb)
+        rospy.Subscriber('/twist_cmd', TwistStamped, self.twist_cb)
         self.current_linear_velocity = None
         self.target_linear_velocity = None
         self.target_angular_velocity = None
-    
+    ################################################################################################
         # Main loop
         rate = rospy.Rate(50) # Running at 50 Hz
         while not rospy.is_shutdown():
             if self.current_linear_velocity != None and self.target_linear_velocity != None and self.target_angular_velocity != None:
                 # TODO Fix both controllers and then uncomment
-                #throttle, brake = self.throttle_brake_controller.control(self.current_linear_velocity, self.target_linear_velocity) # TODO Fix control method
-                #steering_wheel_angle = self.steering_controller.control(self.current_linear_velocity, self.target_linear_velocity, self.target_angular_velocity) # TODO Fix control method
-                throttle, brake, steering_wheel_angle = 1., 0., 0.
+                throttle, brake = self.throttle_brake_controller.control(self.current_linear_velocity, self.target_linear_velocity) # TODO Fix control method
+                steering_wheel_angle = self.steering_controller.control(self.current_linear_velocity, self.target_linear_velocity, self.target_angular_velocity) # TODO Fix control method
+                #throttle, brake, steering_wheel_angle = 1., 0., 0.
                 self.publish(throttle, brake, steering_wheel_angle)
                 rate.sleep()
 
+   
+    def velocity_cb(self, msg):
+        self.current_linear_velocity = msg.twist.linear.x
+    
+    def twist_cb(self, msg):
+        self.target_linear_velocity = msg.twist.linear.x
+        self.target_angular_velocity = msg.twist.angular.z
+   
+   
+   
     def publish(self, throttle: float, brake: float, steer: float):
         tcmd = ThrottleCmd()
         tcmd.enable = True
