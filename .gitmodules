@@ -1,3 +1,4 @@
+
 [submodule "ros/TRAFFICLIGHTDETECTION"]
-	path = /home/mahmud/CAV_project/cad-final-project/ros/TRAFFICLIGHTDETECTION
+	path = ros/TRAFFICLIGHTDETECTION
 	url = https://github.com/AliMO77/TRAFFICLIGHTDETECTION.git
