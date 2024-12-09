@@ -1,4 +1,4 @@
-# Connected and Autonomous Driving - Final Project
+# Connected and Autonomous Driving 
 
 This project is based off the Open Source Unity Simulator from Udacity and its [Self-Driving Car Nanodegree Capstone Project](https://github.com/udacity/CarND-Capstone). Some modifications and customizations have been introduced by us, so don't try to blindly copy existing solutions you might find online.
 
